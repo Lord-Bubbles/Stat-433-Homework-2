@@ -1,0 +1,102 @@
+---
+title: "Homework 2"
+author: "Justin Li"
+date: "2022-10-08"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+library(nycflights13)
+library(dplyr)
+library(ggplot2)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+What time of day should you fly if you want to avoid delays as much as possible? 
+Does this choice depend on anything? Season? Weather? Airport? Airline? Find 
+three patterns (“null results” are ok!). Write your results into Rmarkdown. 
+Include a short introduction that summarizes the three results. Then, have a 
+section for each finding. Support each finding with data summaries and 
+visualizations. Include your code when necessary.
+```{r}
+flights %>%
+  mutate(on_time = if_else(condition = arr_delay <= 0,
+                           true = T,
+                           false = F,
+                           missing = F)) %>%
+  group_by(hour) %>%
+  summarise(proportion_arrived_on_time = mean(on_time),
+            number_flights = n()) %>%
+  arrange(desc(proportion_arrived_on_time)) 
+  
+```
+
+If you want to avoid delays as much as possible, you should fly at 7 am as it 
+has the highest proportion of flights that arrived on time. 
+
+## Airlines ##
+```{r}
+flights %>%
+  left_join(airlines, by = "carrier") %>%
+  filter(hour == 7) %>%
+  mutate(on_time = if_else(condition = arr_delay <= 0,
+                           true = T,
+                           false = F,
+                           missing = F)) %>%
+  group_by(name) %>%
+  summarise(proportion_arrived_on_time = mean(on_time),
+            number_flights = n()) %>%
+  arrange(desc(proportion_arrived_on_time))
+
+```
+
+As shown in the chart above, the airlines does seem to indicate your likelihood
+of arriving on time. For example, American Airlines had a 75.8% proportion of 
+flights that arrived on time while still having a total of 3348 flights. On the
+other hand ExpressJet Airlines had a 65.1% proportion of flights that arrived
+on time while having a total of 2370 flights. This seems to indicate that 
+certain airlines are better than others in terms of proportion of flights that
+arrived on time. Therefore, you should choose carefully about the airline when
+flying out at 7 am. 
+
+## Origin Airport ##
+```{r}
+flights %>%
+  left_join(airports, by = c("origin" = "faa")) %>%
+  filter(hour == 7) %>%
+  mutate(on_time = if_else(condition = arr_delay <= 0,
+                           true = T,
+                           false = F,
+                           missing = F)) %>%
+  group_by(name) %>%
+  summarise(proportion_arrived_on_time = mean(on_time),
+            number_flights = n()) %>%
+  arrange(desc(proportion_arrived_on_time)) 
+  
+```
+
+As New York only has 3 airports, and each have a very similar proportion of 
+flights that arrived on time, there seems to be no relationship between the
+origin airport and proportion of flights that arrived on time. Therefore, 
+your choice of which airport to fly out of doesn't do anything to improve
+the odds of you arriving on time at 7 am. 
+
+## Weather (visibility) ##
+```{r}
+flights %>%
+  left_join(weather, by = c("year", "month", "day", "hour", "origin")) %>%
+  filter(hour == 7) %>%
+  mutate(on_time = if_else(condition = arr_delay <= 0,
+                           true = T,
+                           false = F,
+                           missing = F)) %>%
+  group_by(visib) %>%
+  summarise(proportion_arrived_on_time = mean(on_time),
+            number_flights = n()) %>%
+  ggplot(aes(visib, proportion_arrived_on_time)) + geom_point()
+```
+
+There seems to be a relationship between visibility and proportion of flights
+that arrived on time, if we ignore the data less than visibility of 1.25 miles.
+It seems like as the visibility increases, the better the proportion. Therefore,
+even at the 7 am, you'll want to fly when the visibility is high. 
