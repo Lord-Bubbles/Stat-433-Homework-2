@@ -138,12 +138,11 @@ flights %>%
   ggplot(aes(visib, proportion_arrived_on_time)) + geom_point()
 ```
 
-    ## Warning: Removed 1 rows containing missing values (geom_point).
-
 ![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 There seems to be a relationship between visibility and proportion of
-flights that arrived on time, if we ignore the data less than visibility
-of 1.25 miles. It seems like as the visibility increases, the better the
-proportion. Therefore, even at the 7 am, you’ll want to fly when the
-visibility is high.
+flights that arrived on time. It seems like as the visibility increases,
+the better the proportion of flights that arrived on time. Therefore,
+even at 7 am, you’ll want to fly when the visibility is high. This makes
+sense because if you can’t see far in front of you, the pilot will need
+to be extra careful when piloting, which might lead to an arrival delay.

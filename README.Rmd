@@ -18,6 +18,7 @@ three patterns (“null results” are ok!). Write your results into Rmarkdown.
 Include a short introduction that summarizes the three results. Then, have a 
 section for each finding. Support each finding with data summaries and 
 visualizations. Include your code when necessary.
+
 ```{r}
 flights %>%
   mutate(on_time = if_else(condition = arr_delay <= 0,
@@ -82,7 +83,7 @@ your choice of which airport to fly out of doesn't do anything to improve
 the odds of you arriving on time at 7 am. 
 
 ## Weather (visibility) ##
-```{r}
+```{r, warning=FALSE}
 flights %>%
   left_join(weather, by = c("year", "month", "day", "hour", "origin")) %>%
   filter(hour == 7) %>%
@@ -97,6 +98,8 @@ flights %>%
 ```
 
 There seems to be a relationship between visibility and proportion of flights
-that arrived on time, if we ignore the data less than visibility of 1.25 miles.
-It seems like as the visibility increases, the better the proportion. Therefore,
-even at the 7 am, you'll want to fly when the visibility is high. 
+that arrived on time. It seems like as the visibility increases, the better the 
+proportion of flights that arrived on time. Therefore, even at 7 am, you'll want
+to fly when the visibility is high. This makes sense because if you can't see
+far in front of you, the pilot will need to be extra careful when piloting, 
+which might lead to an arrival delay. 
