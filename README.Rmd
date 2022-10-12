@@ -19,6 +19,11 @@ Include a short introduction that summarizes the three results. Then, have a
 section for each finding. Support each finding with data summaries and 
 visualizations. Include your code when necessary.
 
+## Summary ##
+If you want to avoid delays as much as possible, you should book a flight that
+departs at 7 am. This choice seems to depend on weather, specifically 
+visibility, and the airline. It doesn't depend on which airport you leave from.
+
 ```{r}
 flights %>%
   mutate(on_time = if_else(condition = arr_delay <= 0,
